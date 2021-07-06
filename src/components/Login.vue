@@ -6,12 +6,31 @@
             <div class="avatar_box">
                 <img src="../assets/logo.png" alt="登录表单上的头像图标">
             </div>
+
+            <!-- 输入表单区 -->
+            <el-form ref="formRef" :model="loginFormModel" label-width="0px" class="login_form">
+                <el-form-item>
+                    <el-input v-model="loginFormModel.loginName" prefix-icon='iconfont icon-zhanghao'></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-input v-model="loginFormModel.password" prefix-icon='iconfont icon-mima' type="password"></el-input>
+                </el-form-item>
+            </el-form>
         </div>
     </div>
 </template>
 
 <script>
-export default {}
+export default {
+  data () {
+    return {
+      loginFormModel: {
+        loginName: '',
+        password: ''
+      }
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>
@@ -49,5 +68,14 @@ export default {}
     border-radius: 50%;
     background-color: #eee;
   }
+}
+
+// 登录表单相关
+.login_form{
+    width: 100%;
+    bottom: 0;
+    position: absolute;
+    padding: 0 10%;
+    box-sizing: border-box;
 }
 </style>

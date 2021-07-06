@@ -4,6 +4,8 @@ import router from './router'
 import './plugins/element.js'
 // 配置全局样式
 import './assets/css/global.css'
+// 导入图标样式
+import './assets/fonts/iconfont.css'
 
 Vue.config.productionTip = false
 
