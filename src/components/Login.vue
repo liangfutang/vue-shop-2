@@ -70,6 +70,8 @@ export default {
         this.$message.success('登录成功')
         // 2. 获取token并将token存储到本地
         window.sessionStorage.setItem('token', result.data.token)
+        // 3. 成功后需要跳转到首页导航页面
+        this.$router.push('/home')
       })
     }
   }
