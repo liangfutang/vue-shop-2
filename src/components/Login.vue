@@ -1,9 +1,10 @@
 <template>
     <div class="login_container">
+        <!-- 整个登录区设置 -->
         <div class="login_box">
             <!-- 头像区域 -->
             <div class="avatar_box">
-                <img src="" alt="登录表单上的头像图标">
+                <img src="../assets/logo.png" alt="登录表单上的头像图标">
             </div>
         </div>
     </div>
@@ -22,5 +23,31 @@ export default {}
 .login_box{
     width: 450px;
     height: 300px;
+    left: 50%;
+    top: 50%;
+    background-color: #fff;
+    border-radius: 20px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+// 设置头像相关样式
+.avatar_box{
+  width: 130px;
+  height: 130px;
+  left: 50%;
+  border: 1px solid #eee;
+  padding: 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #ddd;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #eee;
+  }
 }
 </style>
