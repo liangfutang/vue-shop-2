@@ -18,7 +18,7 @@
                 <!-- 登录和重置按钮 -->
                 <el-form-item class="loginAndReset">
                   <el-button type="primary" @click="doLogin('loginFormRef')">登录</el-button>
-                  <el-button type="primary" @click="resetLoginForm('loginFormRef')">重置</el-button>
+                  <el-button type="info" @click="resetLoginForm('loginFormRef')">重置</el-button>
                 </el-form-item>
             </el-form>
         </div>
