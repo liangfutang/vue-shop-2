@@ -40,7 +40,6 @@ router.beforeEach((to, from, next) => {
   if (to.path === '/login') return next()
   // 如果不是去登录，那么需要获取token，如果没有token，那么需要跳转去登录
   const tokenStr = window.sessionStorage.getItem('token')
-  console.log('取出的token值是' + tokenStr)
   if (!tokenStr) return next('/login')
   // 符合上述条件的则正常的去跳转
   next()

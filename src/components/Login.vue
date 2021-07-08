@@ -57,8 +57,6 @@ export default {
           return
         }
         const { data: result } = await this.axios.post('/api/private/v1/login', this.loginFormModel)
-        console.log('请求返回:')
-        console.log(result)
 
         // 登录失败
         if (result.meta.status !== 200) {

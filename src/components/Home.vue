@@ -4,7 +4,7 @@
         <el-header>
             <div>
                 <img src="../assets/home-header.jpg" alt="导航图标"/>
-                <span>电商后台管理系统</span>
+                <span>后台数据管理系统</span>
             </div>
             <el-button type="info" @click="logout">退出</el-button>
         </el-header>
@@ -12,33 +12,19 @@
             <!-- 侧边 -->
             <el-aside width="auto" @mouseenter.native="collapseOpen" @mouseleave.native="collapseClose">
                 <el-menu class="el-menu-vertical-demo" :collapse="isCollapse" background-color="#333744" text-color="#fff" active-text-color="#ffd04b">
-                    <!-- 导航--展示一 -->
-                    <el-submenu index="1">
+                    <!-- 导航--一级导航 -->
+                    <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
                         <template slot="title">
-                            <i class="el-icon-location"></i>
-                            <span slot="title">产品</span>
+                            <i :class="iconsObj[item.id]"></i>
+                            <span slot="title">{{item.authName}}</span>
                         </template>
-                        <el-menu-item-group>
-                            <span slot="title">报表展示</span>
-                            <el-menu-item index="1-1">书籍类</el-menu-item>
-                        </el-menu-item-group>
-                        <el-menu-item-group title="数据录入">
-                            <el-menu-item index="1-3">录入</el-menu-item>
-                        </el-menu-item-group>
+                        <el-menu-item :index="subItem.id + ''" v-for="subItem in item.children" :key="subItem.id">
+                            <template slot="title">
+                                <i class="el-icon-menu"></i>
+                                <span slot="title">{{subItem.authName}}</span>
+                            </template>
+                        </el-menu-item>
                     </el-submenu>
-                    <!-- 导航--展示二 -->
-                    <el-submenu index='2'>
-                        <template slot="title">
-                            <i class="el-icon-menu"></i>
-                            <span slot="title">利润</span>
-                        </template>
-                        <el-menu-item index="1-3">经销</el-menu-item>
-                    </el-submenu>
-                    <!-- 导航--设置 -->
-                    <el-menu-item index="4">
-                        <i class="el-icon-setting"></i>
-                        <span slot="title">设置</span>
-                    </el-menu-item>
                 </el-menu>
             </el-aside>
             <!-- 主页面 -->
@@ -54,7 +40,15 @@ export default {
       // true表示左边栏向左收起
       isCollapse: true,
       // 左侧导航菜单列表
-      menuList: null
+      menuList: [],
+      // 图标
+      iconsObj: {
+        110: 'iconfont icon-icon_users',
+        130: 'iconfont icon-quanxianguanli',
+        150: 'iconfont icon-shangpinguanli',
+        170: 'iconfont icon-dingdanguanli-',
+        190: 'iconfont icon-baobiao'
+      }
     }
   },
   created () {
@@ -78,7 +72,6 @@ export default {
       // 如果请求异常，显示提示消息
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.menuList = res.data
-      console.log('是的是的所所多所多:' + JSON.stringify(this.menuList))
     }
   }
 }
@@ -121,4 +114,9 @@ export default {
     width: 200px;
     min-height: 100%;
  }
+
+// 导航中的图标和文字说明之间保持间距
+ .iconfont {
+  margin-right: 10px;
+}
 </style>
