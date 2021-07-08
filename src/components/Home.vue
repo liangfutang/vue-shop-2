@@ -11,14 +11,15 @@
         <el-container>
             <!-- 侧边 -->
             <el-aside width="auto" @mouseenter.native="collapseOpen" @mouseleave.native="collapseClose">
-                <el-menu class="el-menu-vertical-demo" :collapse="isCollapse" background-color="#333744" text-color="#fff" active-text-color="#ffd04b" unique-opened>
+                <el-menu class="el-menu-vertical-demo" :collapse="isCollapse" background-color="#333744" text-color="#fff" active-text-color="#ffd04b" unique-opened router :default-active="activePath">
                     <!-- 导航--一级导航 -->
                     <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
                         <template slot="title">
                             <i :class="iconsObj[item.id]"></i>
                             <span slot="title">{{item.authName}}</span>
                         </template>
-                        <el-menu-item :index="subItem.id + ''" v-for="subItem in item.children" :key="subItem.id">
+                        <!-- 二级导航 -->
+                        <el-menu-item :index="subItem.path" v-for="subItem in item.children" :key="subItem.id" @click="saveActivePath(subItem.path)">
                             <template slot="title">
                                 <i class="el-icon-menu"></i>
                                 <span slot="title">{{subItem.authName}}</span>
@@ -28,7 +29,10 @@
                 </el-menu>
             </el-aside>
             <!-- 主页面 -->
-            <el-main>Main</el-main>
+            <el-main>
+              <!-- 路由占位符 -->
+              <router-view></router-view>
+            </el-main>
         </el-container>
     </el-container>
 </template>
@@ -41,6 +45,8 @@ export default {
       isCollapse: true,
       // 左侧导航菜单列表
       menuList: [],
+      // 保存被激活链接地址
+      activePath: '',
       // 图标
       iconsObj: {
         110: 'iconfont icon-icon_users',
@@ -53,6 +59,7 @@ export default {
   },
   created () {
     this.getMenuList()
+    this.activePath = window.sessionStorage.getItem('activePath')
   },
   methods: {
     logout () {
@@ -72,6 +79,10 @@ export default {
       // 如果请求异常，显示提示消息
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.menuList = res.data
+    },
+    saveActivePath (activePath) {
+      window.sessionStorage.setItem('activePath', activePath)
+      this.activePath = activePath
     }
   }
 }

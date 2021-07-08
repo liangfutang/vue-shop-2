@@ -4,6 +4,8 @@ import VueRouter from 'vue-router'
 import Login from '../components/Login.vue'
 // 登录后显示的主页面
 import Home from '../components/Home.vue'
+import Welcome from '../components/Welcome.vue'
+import Users from '../components/user/Users.vue'
 
 Vue.use(VueRouter)
 
@@ -25,7 +27,12 @@ const routes = [
   {
     path: '/home',
     name: '主页面',
-    component: Home
+    component: Home,
+    redirect: '/welcome',
+    children: [
+      { path: '/welcome', name: '主页欢迎页', component: Welcome },
+      { path: '/users', name: '用户列表页', component: Users }
+    ]
   }
 ]
 
