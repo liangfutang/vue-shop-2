@@ -11,7 +11,7 @@
         <el-container>
             <!-- 侧边 -->
             <el-aside width="auto" @mouseenter.native="collapseOpen" @mouseleave.native="collapseClose">
-                <el-menu class="el-menu-vertical-demo" :collapse="isCollapse" background-color="#333744" text-color="#fff" active-text-color="#ffd04b">
+                <el-menu class="el-menu-vertical-demo" :collapse="isCollapse" background-color="#333744" text-color="#fff" active-text-color="#ffd04b" unique-opened>
                     <!-- 导航--一级导航 -->
                     <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
                         <template slot="title">
@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     logout () {
-      window.sessionStorage.removeItem('token')
+      window.sessionStorage.clear()
       this.$router.push('/login')
     },
     // 左边栏展开
@@ -104,6 +104,9 @@ export default {
 
 .el-aside {
     background-color: #333744;
+    .el-menu {
+    border-right: none;
+  }
 }
 
 .el-main {
