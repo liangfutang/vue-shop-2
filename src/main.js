@@ -8,11 +8,13 @@ import './assets/css/global.css'
 import './assets/fonts/iconfont.css'
 
 import axios from 'axios'
+import { Message } from 'element-ui'
 
 // 配置请求的根路径
 axios.defaults.baseURL = 'http://127.0.0.1:7777'
 axios.defaults.timeout = 5000
-// 拦截请求，为所有请求添加token参数
+
+// 拦截请求request，为所有请求添加token参数
 axios.interceptors.request.use(config => {
   // 如果是登录页则不设置
   if (config.url === '/api/private/v1/login') {
@@ -22,6 +24,31 @@ axios.interceptors.request.use(config => {
   config.headers.Authorization = window.sessionStorage.getItem('token')
   return config
 })
+
+// 拦截返回response，对非200的返回显示提示消息
+axios.interceptors.response.use(response => {
+  return response
+},
+error => {
+  if (error.response.status) {
+    var messageStr = error.response.data && error.response.data.meta && error.response.data.meta.msg ? error.response.data.meta.msg : error.name
+    switch (error.response.status) {
+      case 400:
+        Message({
+          message: messageStr,
+          type: 'error'
+        })
+        break
+      default:
+        Message({
+          message: '请求服务端异常',
+          type: 'error'
+        })
+    }
+  }
+  return Promise.reject(error.response)
+})
+
 Vue.prototype.axios = axios
 
 Vue.config.productionTip = false

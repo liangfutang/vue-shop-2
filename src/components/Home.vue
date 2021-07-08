@@ -52,8 +52,13 @@ export default {
   data () {
     return {
       // true表示左边栏向左收起
-      isCollapse: true
+      isCollapse: true,
+      // 左侧导航菜单列表
+      menuList: null
     }
+  },
+  created () {
+    this.getMenuList()
   },
   methods: {
     logout () {
@@ -67,6 +72,13 @@ export default {
     // 左边栏收起
     collapseClose () {
       this.isCollapse = true
+    },
+    async getMenuList () {
+      const { data: res } = await this.axios.get('/api/private/v1/menus')
+      // 如果请求异常，显示提示消息
+      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+      this.menuList = res.data
+      console.log('是的是的所所多所多:' + JSON.stringify(this.menuList))
     }
   }
 }
