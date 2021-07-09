@@ -11,9 +11,9 @@
         <el-card class="box-card">
             <el-row :gutter="20">
                 <!-- 输入框 -->
-                <el-col :span="7">
-                    <el-input placeholder="请输入内容">
-                        <el-button slot="append" icon="el-icon-search"></el-button>
+                <el-col :span="6">
+                    <el-input placeholder="请输入内容" v-model='queryInfo.query' clearable @clear="getUserList">
+                        <el-button slot="append" icon="el-icon-search" @click="getUserList"></el-button>
                     </el-input>
                 </el-col>
                 <!-- 添加用户按钮 -->
@@ -60,6 +60,7 @@ export default {
   data () {
     return {
       queryInfo: {
+        query: '',
         pageNum: 1,
         pageSize: 5
       },
