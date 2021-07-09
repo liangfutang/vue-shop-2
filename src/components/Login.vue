@@ -56,7 +56,7 @@ export default {
           console.log('校验不通过，不能提交表单')
           return
         }
-        const { data: result } = await this.axios.post('/api/private/v1/login', this.loginFormModel)
+        const { data: result } = await this.$http.post('/api/private/v1/login', this.loginFormModel)
 
         // 登录失败
         if (result.meta.status !== 200) {

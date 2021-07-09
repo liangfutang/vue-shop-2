@@ -25,7 +25,24 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data () {
+    return {
+      queryInfo: {
+        pageNum: 1,
+        pageSize: 5
+      }
+    }
+  },
+  created () {
+    this.getUserList()
+  },
+  methods: {
+    getUserList () {
+      //   this.h
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>

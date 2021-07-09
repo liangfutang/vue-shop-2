@@ -49,7 +49,7 @@ error => {
   return Promise.reject(error.response)
 })
 
-Vue.prototype.axios = axios
+Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
 

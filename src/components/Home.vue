@@ -75,7 +75,7 @@ export default {
       this.isCollapse = true
     },
     async getMenuList () {
-      const { data: res } = await this.axios.get('/api/private/v1/menus')
+      const { data: res } = await this.$http.get('/api/private/v1/menus')
       // 如果请求异常，显示提示消息
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.menuList = res.data
