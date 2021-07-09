@@ -83,7 +83,7 @@ export default {
         userInfo.mgState = !userInfo.mgState
         return this.$message.error(res.meta.msg)
       }
-      this.$message.success('res.meta.msg')
+      this.$message.success(res.meta.msg)
     }
   }
 }
@@ -91,12 +91,12 @@ export default {
 
 <style lang="less" scoped>
 .el-row {
-    margin-bottom: 20px;
-    &:last-child {
-      margin-bottom: 0;
-    }
+  margin-bottom: 20px;
+  &:last-child {
+    margin-bottom: 0;
   }
-  .el-col {
-    border-radius: 4px;
-  }
+}
+.el-col {
+  border-radius: 4px;
+}
 </style>
