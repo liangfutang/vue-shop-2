@@ -46,6 +46,11 @@
                     </template>
                 </el-table-column>
             </el-table>
+
+            <!-- 分页区域 -->
+            <el-pagination :current-page="queryInfo.pageNum" :page-size="queryInfo.pageSize" :page-sizes="[1, 2, 5, 10, 20]"  layout="total, sizes, prev, pager, next, jumper"
+            :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange">
+            </el-pagination>
         </el-card>
     </div>
 </template>
@@ -67,7 +72,9 @@ export default {
   },
   methods: {
     async getUserList () {
-      const { data: res } = await this.$http.get('/api/private/v1/users', this.queryInfo)
+      const { data: res } = await this.$http.get('/api/private/v1/users', {
+        params: this.queryInfo
+      })
       // 如果业务code状态不是200则弹出提示消息
       if (res.meta.status !== 200) {
         return this.$message.error(res.meta.msg)
@@ -84,6 +91,16 @@ export default {
         return this.$message.error(res.meta.msg)
       }
       this.$message.success(res.meta.msg)
+    },
+    // 监听每页数目的变化
+    handleSizeChange (newPageSize) {
+      this.queryInfo.pageSize = newPageSize
+      this.getUserList()
+    },
+    // 监听当前页的变化
+    handleCurrentChange (newPageNum) {
+      this.queryInfo.pageNum = newPageNum
+      this.getUserList()
     }
   }
 }
