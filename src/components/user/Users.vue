@@ -18,7 +18,7 @@
                 </el-col>
                 <!-- 添加用户按钮 -->
                 <el-col :span="4">
-                    <el-button type="primary">添加用户</el-button>
+                    <el-button type="primary" @click="dialogTableVisible = true">添加用户</el-button>
                 </el-col>
             </el-row>
             <!-- 显示用户列表数据 -->
@@ -51,6 +51,15 @@
             <el-pagination :current-page="queryInfo.pageNum" :page-size="queryInfo.pageSize" :page-sizes="[1, 2, 5, 10, 20]"  layout="total, sizes, prev, pager, next, jumper"
             :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange">
             </el-pagination>
+
+            <!-- 添加用户提示框 -->
+            <el-dialog title="添加用户" :visible.sync="dialogTableVisible">
+              <el-table>
+                <el-table-column property="date" label="日期" width="150"></el-table-column>
+                <el-table-column property="name" label="姓名" width="200"></el-table-column>
+                <el-table-column property="address" label="地址"></el-table-column>
+              </el-table>
+            </el-dialog>
         </el-card>
     </div>
 </template>
@@ -65,7 +74,9 @@ export default {
         pageSize: 5
       },
       userList: [],
-      total: 0
+      total: 0,
+      // 添加用户对话框
+      dialogTableVisible: false
     }
   },
   created () {
