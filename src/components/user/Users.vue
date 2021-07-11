@@ -18,7 +18,7 @@
                 </el-col>
                 <!-- 添加用户按钮 -->
                 <el-col :span="4">
-                    <el-button type="primary" @click="dialogTableVisible = true">添加用户</el-button>
+                    <el-button type="primary" @click="addDialogTableVisible = true">添加用户</el-button>
                 </el-col>
             </el-row>
             <!-- 显示用户列表数据 -->
@@ -53,12 +53,28 @@
             </el-pagination>
 
             <!-- 添加用户提示框 -->
-            <el-dialog title="添加用户" :visible.sync="dialogTableVisible">
-              <el-table>
-                <el-table-column property="date" label="日期" width="150"></el-table-column>
-                <el-table-column property="name" label="姓名" width="200"></el-table-column>
-                <el-table-column property="address" label="地址"></el-table-column>
-              </el-table>
+            <el-dialog title="添加用户" :visible.sync="addDialogTableVisible" @close="addDialogTableClose">
+              <el-form :model="addUserModel" ref="resetAddUserRef" label-width="100px">
+                  <!-- 输入框 -->
+                  <el-form-item label="用户名" prop="userName">
+                      <el-input v-model.number="addUserModel.userName"></el-input>
+                  </el-form-item>
+                  <el-form-item label="密码" prop="password">
+                      <el-input v-model.number="addUserModel.password"></el-input>
+                  </el-form-item>
+                  <el-form-item label="邮箱" prop="email">
+                      <el-input v-model.number="addUserModel.email"></el-input>
+                  </el-form-item>
+                  <el-form-item label="手机号" prop="mobile">
+                      <el-input v-model.number="addUserModel.mobile"></el-input>
+                  </el-form-item>
+              </el-form>
+              <!-- 底部区域 -->
+              <span slot="footer" class="dialog-footer">
+                  <el-button @click="addDialogTableVisible = false">取 消</el-button>
+                  <el-button type="info" @click="resetAddForm('resetAddUserRef')">重置</el-button>
+                  <el-button type="primary" @click="addUser">确 定</el-button>
+              </span>
             </el-dialog>
         </el-card>
     </div>
@@ -76,7 +92,13 @@ export default {
       userList: [],
       total: 0,
       // 添加用户对话框
-      dialogTableVisible: false
+      addDialogTableVisible: false,
+      addUserModel: {
+        userName: '',
+        password: '',
+        email: '',
+        mobile: ''
+      }
     }
   },
   created () {
@@ -113,6 +135,30 @@ export default {
     handleCurrentChange (newPageNum) {
       this.queryInfo.pageNum = newPageNum
       this.getUserList()
+    },
+    // 重置添加用户对话框
+    resetAddForm (resetAddUserRef) {
+      this.$refs[resetAddUserRef].resetFields()
+    },
+    // 添加用户到后台
+    addUser () {
+      this.$refs.resetAddUserRef.validate(async valid => {
+        if (!valid) return
+        // 发起新增用户的网络请求
+        const { data: res } = await this.$http.post('/api/private/v1/users', this.addUserModel)
+        // 如果新增失败则提示失败
+        if (res.meta.status !== 200) {
+          this.$message.error(res.meta.msg === '' ? '新增用户失败' : res.meta.msg)
+        } else {
+          this.$message.success(res.meta.msg)
+        }
+        // 刷新用户列表
+        this.getUserList()
+      })
+    },
+    // 关闭添加用户对话框后清空对话框
+    addDialogTableClose () {
+      this.$refs.resetAddUserRef.resetFields()
     }
   }
 }
