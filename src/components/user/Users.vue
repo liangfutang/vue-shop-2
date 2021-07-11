@@ -54,7 +54,7 @@
 
             <!-- 添加用户提示框 -->
             <el-dialog title="添加用户" width="50%" :visible.sync="addDialogTableVisible" @close="addDialogTableClose">
-              <el-form :model="addUserModel" ref="resetAddUserRef" label-width="70px">
+              <el-form :model="addUserModel" :rules="addUserFormRules" ref="resetAddUserRef" label-width="70px">
                   <!-- 输入框 -->
                   <el-form-item label="用户名" prop="userName">
                       <el-input v-model.number="addUserModel.userName"></el-input>
@@ -103,6 +103,16 @@
 <script>
 export default {
   data () {
+    // 验证手机号的规则
+    var checkMobile = (rule, value, callback) => {
+      // 验证手机号的正则表达式
+      const regMobile = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
+      if (regMobile.test(value)) {
+        // 校验合法
+        return callback()
+      }
+      callback(new Error('请输入合法的手机号码'))
+    }
     return {
       queryInfo: {
         query: '',
@@ -122,7 +132,27 @@ export default {
         mobile: ''
       },
       // 编辑对话框中数据
-      editUserModel: {}
+      editUserModel: {},
+      // 添加表单的验证对象
+      addUserFormRules: {
+        // 用户名的校验
+        userName: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 3, max: 16, message: '长度须在 3 到 16 个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 3, max: 16, message: '长度须在 3 到 16 个字符', trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+        ],
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { validator: checkMobile, trigger: ['blur', 'change'] }
+        ]
+      }
     }
   },
   created () {
