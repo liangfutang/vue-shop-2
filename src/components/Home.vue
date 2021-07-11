@@ -16,13 +16,13 @@
                     <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
                         <template slot="title">
                             <i :class="iconsObj[item.id]"></i>
-                            <span slot="title">{{item.authName}}</span>
+                            <span slot="title">{{item.menuName}}</span>
                         </template>
                         <!-- 二级导航 -->
                         <el-menu-item :index="subItem.path" v-for="subItem in item.children" :key="subItem.id" @click="saveActivePath(subItem.path)">
                             <template slot="title">
                                 <i class="el-icon-menu"></i>
-                                <span slot="title">{{subItem.authName}}</span>
+                                <span slot="title">{{subItem.menuName}}</span>
                             </template>
                         </el-menu-item>
                     </el-submenu>
