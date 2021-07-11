@@ -34,11 +34,11 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="address" label="操作" width="200px">
-                    <template >
+                    <template slot-scope="scope">
                         <!-- 修改按钮 -->
                         <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
                         <!-- 删除按钮 -->
-                        <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+                        <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteUserById(scope.row.id)"></el-button>
                         <!-- 分配角色按钮 -->
                         <el-tooltip class="item" effect="dark" content="角色分配" placement="top-end" :enterable="false">
                             <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
@@ -152,6 +152,8 @@ export default {
         } else {
           this.$message.success(res.meta.msg)
         }
+        // 先关闭对话框
+        this.addDialogTableVisible = false
         // 刷新用户列表
         this.getUserList()
       })
@@ -159,6 +161,27 @@ export default {
     // 关闭添加用户对话框后清空对话框
     addDialogTableClose () {
       this.$refs.resetAddUserRef.resetFields()
+    },
+    // 根据id删除用户
+    async deleteUserById (id) {
+      const confirmResult = await this.$confirm(
+        '此操作将永久删除该用户, 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).catch(error => error)
+
+      // 点击确认返回的是confirm， 点击取消返回的是cancel
+      // 如果点击取消，则不进行下面的动作
+      if (confirmResult !== 'confirm') return this.$message.info('取消删除该用户')
+      // 点击确定后，删除该用户信息，并刷新用户列表
+      const { data: deleteResult } = await this.$http.delete(`/api/private/v1/users/${id}`)
+      if (deleteResult.meta.status !== 200) this.$message.error(deleteResult.meta.msg)
+      // 删除完刷新列表
+      this.getUserList()
     }
   }
 }
