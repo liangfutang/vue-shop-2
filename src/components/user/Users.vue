@@ -36,7 +36,7 @@
                 <el-table-column prop="address" label="操作" width="200px">
                     <template slot-scope="scope">
                         <!-- 修改按钮 -->
-                        <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+                        <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
                         <!-- 删除按钮 -->
                         <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteUserById(scope.row.id)"></el-button>
                         <!-- 分配角色按钮 -->
@@ -53,8 +53,8 @@
             </el-pagination>
 
             <!-- 添加用户提示框 -->
-            <el-dialog title="添加用户" :visible.sync="addDialogTableVisible" @close="addDialogTableClose">
-              <el-form :model="addUserModel" ref="resetAddUserRef" label-width="100px">
+            <el-dialog title="添加用户" width="50%" :visible.sync="addDialogTableVisible" @close="addDialogTableClose">
+              <el-form :model="addUserModel" ref="resetAddUserRef" label-width="70px">
                   <!-- 输入框 -->
                   <el-form-item label="用户名" prop="userName">
                       <el-input v-model.number="addUserModel.userName"></el-input>
@@ -76,6 +76,26 @@
                   <el-button type="primary" @click="addUser">确 定</el-button>
               </span>
             </el-dialog>
+
+            <!-- 编辑用户提示框 -->
+            <el-dialog title="编辑用户" width="50%" :visible.sync="editDialogTableVisible" @close="editDialogTableClose">
+              <el-form :model="editUserModel" ref="resetEditUserRef" label-width="70px">
+                <el-form-item label="用户名" prop="userName">
+                  <el-input v-model="editUserModel.userName"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="email">
+                  <el-input v-model="editUserModel.email"></el-input>
+                </el-form-item>
+                <el-form-item label="手机号" prop="mobile">
+                  <el-input v-model="editUserModel.mobile"></el-input>
+                </el-form-item>
+              </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="editDialogTableVisible = false">取 消</el-button>
+                <el-button type="primary" @click="eidtUserInfo">确 定</el-button>
+              </div>
+            </el-dialog>
+
         </el-card>
     </div>
 </template>
@@ -91,14 +111,18 @@ export default {
       },
       userList: [],
       total: 0,
-      // 添加用户对话框
+      // 添加用户对话框是否展示
       addDialogTableVisible: false,
+      // 编辑用户对话框是否展示
+      editDialogTableVisible: false,
       addUserModel: {
         userName: '',
         password: '',
         email: '',
         mobile: ''
-      }
+      },
+      // 编辑对话框中数据
+      editUserModel: {}
     }
   },
   created () {
@@ -182,6 +206,42 @@ export default {
       if (deleteResult.meta.status !== 200) this.$message.error(deleteResult.meta.msg)
       // 删除完刷新列表
       this.getUserList()
+    },
+    // 关闭对话框的时候清空对话框内容
+    editDialogTableClose () {
+      this.$refs.resetEditUserRef.resetFields()
+    },
+    // 编辑修改用户信息
+    eidtUserInfo () {
+      this.$refs.resetEditUserRef.validate(async valid => {
+        if (!valid) return
+        // 向后端发起修改请求
+        const { data: editResult } = await this.$http.put(
+          `/api/private/v1/users/${this.editUserModel.id}`,
+          {
+            userName: this.editUserModel.userName,
+            email: this.editUserModel.email,
+            mobile: this.editUserModel.mobile
+          }
+        )
+        if (editResult.meta.status !== 200) { return this.$message.error(editResult.meta.msg) }
+        // 后端修改后刷新列表
+        this.getUserList()
+        // 关闭编辑对话框
+        this.editDialogTableVisible = false
+        // 提示用户修改成
+        this.$message.success(editResult.meta.msg)
+      })
+    },
+    // 展示要编辑的用户对话框
+    async showEditDialog (id) {
+      // 根据id查找用户信息
+      const { data: selectResult } = await this.$http.get(`/api/private/v1/users/${id}`)
+      if (selectResult.meta.status !== 200) return this.$message.error(selectResult.meta.msg)
+      // 将查到的信息赋值给临时变量
+      this.editUserModel = selectResult.data
+      // 修改打开窗口的标志状态
+      this.editDialogTableVisible = true
     }
   }
 }
