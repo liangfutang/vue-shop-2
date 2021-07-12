@@ -8,6 +8,8 @@ import Welcome from '../components/Welcome.vue'
 import Users from '../components/user/Users.vue'
 // 挂载权限组件
 import Rights from '../components/power/Rights.vue'
+// 角色组件
+import Roles from '../components/power/Roles.vue'
 
 Vue.use(VueRouter)
 
@@ -34,7 +36,8 @@ const routes = [
     children: [
       { path: '/welcome', name: '主页欢迎页', component: Welcome },
       { path: '/users', name: '用户列表页', component: Users },
-      { path: '/rights', name: '权限管理', component: Rights }
+      { path: '/rights', name: '权限管理', component: Rights },
+      { path: '/roles', name: '角色管理', component: Roles }
     ]
   }
 ]

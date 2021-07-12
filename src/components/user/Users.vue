@@ -33,7 +33,7 @@
                         <el-switch v-model="scope.row.mgState" active-color="#13ce66" inactive-color="#909399" @change="userStateChanged(scope.row)"></el-switch>
                     </template>
                 </el-table-column>
-                <el-table-column prop="address" label="操作" width="200px">
+                <el-table-column label="操作" width="200px">
                     <template slot-scope="scope">
                         <!-- 修改按钮 -->
                         <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
