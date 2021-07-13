@@ -14,7 +14,7 @@
             </el-row>
 
             <!-- 角色列表区域 -->
-            <el-table :data="roleTableData" border style="width: 100%" :header-cell-style="{'text-align':'center'}" :cell-style="{'text-align':'center'}">
+            <el-table :data="roleTableData" border stripe style="width: 100%" :header-cell-style="{'text-align':'center'}" :cell-style="{'text-align':'center'}">
                 <el-table-column label="序号" type="index"></el-table-column>
                 <el-table-column prop="roleName" label="角色名称"></el-table-column>
                 <el-table-column prop="roleDesc" label="角色描述"></el-table-column>
