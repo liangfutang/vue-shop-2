@@ -19,11 +19,11 @@
                 <el-table-column prop="roleName" label="角色名称"></el-table-column>
                 <el-table-column prop="roleDesc" label="角色描述"></el-table-column>
                 <el-table-column label="操作" width="300px">
-                    <template>
+                    <template slot-scope="scope">
                         <!-- 修改按钮 -->
                         <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
                         <!-- 删除按钮 -->
-                        <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
+                        <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteRoleById(scope.row.id)">删除</el-button>
                         <!-- 分配角色按钮 -->
                         <el-button type="warning" icon="el-icon-setting" size="mini">分配权限</el-button>
                     </template>
@@ -110,10 +110,31 @@ export default {
     resetAddForm (resetAddUserRef) {
       this.$refs.resetAddRoleRef.resetFields()
     },
-    async addUser () {
-      const { data: addResult } = await this.$http.post('/api/private/v1/roles', this.addRoleModel)
-      if (addResult.meta.status !== 200) return this.$message.error(addResult.meta.msg)
-      this.addDialogTableVisible = false
+    addUser () {
+      this.$refs.resetAddRoleRef.validate(async valid => {
+        if (!valid) return
+        const { data: addResult } = await this.$http.post('/api/private/v1/roles', this.addRoleModel)
+        if (addResult.meta.status !== 200) return this.$message.error(addResult.meta.msg)
+        this.addDialogTableVisible = false
+        this.getRoleList()
+      })
+    },
+    async deleteRoleById (id) {
+      const confirmResult = await this.$confirm(
+        '此操作将永久删除该角色, 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).catch(error => error)
+      // 取消操作
+      if (confirmResult !== 'confirm') return this.$message.info('取消删除该角色')
+      // 确定操作
+      const { data: deleteResult } = await this.$http.delete(`/api/private/v1/roles/${id}`)
+      if (deleteResult.meta.status !== 200) return this.$message.error(deleteResult.meta.msg)
+      // 删除完刷新列表
       this.getRoleList()
     }
   }
