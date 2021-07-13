@@ -10,7 +10,7 @@
         <el-card  class="box-card">
             <!-- 添加角色按钮 -->
             <el-row>
-                <el-button type="primary">添加角色</el-button>
+                <el-button type="primary" @click="addDialogTableVisible = true">添加角色</el-button>
             </el-row>
 
             <!-- 角色列表区域 -->
@@ -29,6 +29,30 @@
                     </template>
                 </el-table-column>
             </el-table>
+
+            <!-- 分页区域 -->
+            <el-pagination :current-page="queryInfo.pageNum" :page-size="queryInfo.pageSize" :page-sizes="[1, 2, 5, 10, 20]"  layout="total, sizes, prev, pager, next, jumper"
+            :total="total" @size-change="handleSizeChange" @current-change="handleCurrentChange">
+            </el-pagination>
+
+            <!-- 添加角色对话框 -->
+            <el-dialog title="添加角色" width="50%" :visible.sync="addDialogTableVisible" @close="addDialogTableClose">
+              <el-form :model="addRoleModel" :rules="addRoleFormRules" ref="resetAddRoleRef" label-width="80px">
+                  <!-- 输入框 -->
+                  <el-form-item label="角色名称" prop="roleName">
+                      <el-input v-model.number="addRoleModel.roleName"></el-input>
+                  </el-form-item>
+                  <el-form-item label="角色描述" prop="roleDesc">
+                      <el-input v-model.number="addRoleModel.roleDesc"></el-input>
+                  </el-form-item>
+              </el-form>
+              <!-- 底部区域 -->
+              <span slot="footer" class="dialog-footer">
+                  <el-button @click="addDialogTableVisible = false">取 消</el-button>
+                  <el-button type="info" @click="resetAddForm('resetAddUserRef')">重置</el-button>
+                  <el-button type="primary" @click="addUser">确 定</el-button>
+              </span>
+            </el-dialog>
         </el-card>
     </div>
 </template>
@@ -37,7 +61,27 @@
 export default {
   data () {
     return {
-      roleTableData: []
+      queryInfo: {
+        pageNum: 1,
+        pageSize: 5
+      },
+      total: 0,
+      roleTableData: [],
+      addDialogTableVisible: false,
+      addRoleModel: {
+        roleName: '',
+        roleDesc: ''
+      },
+      addRoleFormRules: {
+        roleName: [
+          { required: true, message: '请输入角色名称', trigger: 'blur' },
+          { min: 3, max: 16, message: '长度须在 3 到 16 个字符', trigger: 'blur' }
+        ],
+        roleDesc: [
+          { required: true, message: '请输入角色描述', trigger: 'blur' },
+          { min: 3, max: 16, message: '长度须在 3 到 16 个字符', trigger: 'blur' }
+        ]
+      }
     }
   },
   created () {
@@ -45,9 +89,32 @@ export default {
   },
   methods: {
     async getRoleList () {
-      const { data: selectResult } = await this.$http.get('/api/private/v1/roles')
-      if (selectResult.meta.status !== 200) return this.$message.console.error(selectResult.meta.msg)
-      this.roleTableData = selectResult.data
+      const { data: selectResult } = await this.$http.get('/api/private/v1/roles', {
+        params: this.queryInfo
+      })
+      if (selectResult.meta.status !== 200) return this.$message.error(selectResult.meta.msg)
+      this.roleTableData = selectResult.data.data
+      this.total = selectResult.data.total
+    },
+    handleSizeChange (newPageSize) {
+      this.queryInfo.pageSize = newPageSize
+      this.getRoleList()
+    },
+    handleCurrentChange (newPageNum) {
+      this.queryInfo.pageNum = newPageNum
+      this.getRoleList()
+    },
+    addDialogTableClose () {
+      this.$refs.resetAddRoleRef.resetFields()
+    },
+    resetAddForm (resetAddUserRef) {
+      this.$refs.resetAddRoleRef.resetFields()
+    },
+    async addUser () {
+      const { data: addResult } = await this.$http.post('/api/private/v1/roles', this.addRoleModel)
+      if (addResult.meta.status !== 200) return this.$message.error(addResult.meta.msg)
+      this.addDialogTableVisible = false
+      this.getRoleList()
     }
   }
 }
