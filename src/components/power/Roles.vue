@@ -21,7 +21,7 @@
                 <el-table-column label="操作" width="300px">
                     <template slot-scope="scope">
                         <!-- 修改按钮 -->
-                        <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
+                        <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row)">编辑</el-button>
                         <!-- 删除按钮 -->
                         <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteRoleById(scope.row.id)">删除</el-button>
                         <!-- 分配角色按钮 -->
@@ -53,6 +53,22 @@
                   <el-button type="primary" @click="addUser">确 定</el-button>
               </span>
             </el-dialog>
+
+            <!-- 编辑角色提示框 -->
+            <el-dialog title="编辑角色" width="50%" :visible.sync="editDialogTableVisible" @close="editDialogTableClose">
+              <el-form :model="editRoleModel" :rules="addRoleFormRules" ref="resetEditRoleRef" label-width="80px">
+                <el-form-item label="角色名称" prop="roleName">
+                  <el-input v-model="editRoleModel.roleName"></el-input>
+                </el-form-item>
+                <el-form-item label="角色描述" prop="roleDesc">
+                  <el-input v-model="editRoleModel.roleDesc"></el-input>
+                </el-form-item>
+              </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="editDialogTableVisible = false">取 消</el-button>
+                <el-button type="primary" @click="eidtRoleInfo">确 定</el-button>
+              </div>
+            </el-dialog>
         </el-card>
     </div>
 </template>
@@ -68,14 +84,16 @@ export default {
       total: 0,
       roleTableData: [],
       addDialogTableVisible: false,
+      editDialogTableVisible: false,
       addRoleModel: {
         roleName: '',
         roleDesc: ''
       },
+      editRoleModel: {},
       addRoleFormRules: {
         roleName: [
           { required: true, message: '请输入角色名称', trigger: 'blur' },
-          { min: 3, max: 16, message: '长度须在 3 到 16 个字符', trigger: 'blur' }
+          { min: 2, max: 16, message: '长度须在 3 到 16 个字符', trigger: 'blur' }
         ],
         roleDesc: [
           { required: true, message: '请输入角色描述', trigger: 'blur' },
@@ -136,6 +154,29 @@ export default {
       if (deleteResult.meta.status !== 200) return this.$message.error(deleteResult.meta.msg)
       // 删除完刷新列表
       this.getRoleList()
+    },
+    editDialogTableClose () {
+      if (this.$refs.resetEditUserRef !== undefined) {
+        this.$refs.resetEditUserRef.resetFields()
+      }
+    },
+    showEditDialog (editRoleInfo) {
+      this.editDialogTableVisible = true
+      this.editRoleModel = editRoleInfo
+    },
+    eidtRoleInfo () {
+      this.$refs.resetEditRoleRef.validate(async valid => {
+        if (!valid) return
+        // 发送修改的网络请求
+        const { data: editResult } = await this.$http.put(`/api/private/v1/roles/${this.editRoleModel.id}`, {
+          roleName: this.editRoleModel.roleName,
+          roleDesc: this.editRoleModel.roleDesc
+        })
+        if (editResult.meta.status !== 200) return this.$message.error(editResult.meta.msg)
+        this.$message.success(editResult.meta.msg)
+        this.editDialogTableVisible = false
+        this.getRoleList()
+      })
     }
   }
 }
