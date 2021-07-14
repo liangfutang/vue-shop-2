@@ -14,7 +14,7 @@
             </el-row>
 
             <!-- 角色列表区域 -->
-            <el-table :data="roleTableData" border stripe style="width: 100%" :header-cell-style="{'text-align':'center'}" :cell-style="{'text-align':'center'}">
+            <el-table :data="roleTableData" border stripe highlight-current-row style="width: 100%" :header-cell-style="{'text-align':'center'}" :cell-style="{'text-align':'center'}">
                 <el-table-column type="expand">
                   <template slot-scope="scope">
                       <el-row :class="['bdbottom', index1 === 0 ? 'bdtop' : '', 'vcenter']" v-for="(item1, index1) in scope.row.authList" :key="item1.id">
