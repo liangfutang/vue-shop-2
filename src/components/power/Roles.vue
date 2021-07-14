@@ -180,9 +180,7 @@ export default {
       this.getRoleList()
     },
     editDialogTableClose () {
-      if (this.$refs.resetEditUserRef !== undefined) {
-        this.$refs.resetEditUserRef.resetFields()
-      }
+      this.$refs.resetEditRoleRef.resetFields()
     },
     showEditDialog (editRoleInfo) {
       this.editDialogTableVisible = true
