@@ -15,6 +15,30 @@
 
             <!-- 角色列表区域 -->
             <el-table :data="roleTableData" border stripe style="width: 100%" :header-cell-style="{'text-align':'center'}" :cell-style="{'text-align':'center'}">
+                <el-table-column type="expand">
+                  <template slot-scope="scope">
+                      <el-row :class="['bdbottom', index1 === 0 ? 'bdtop' : '', 'vcenter']" v-for="(item1, index1) in scope.row.authList" :key="item1.id">
+                        <!-- 渲染一级权限 -->
+                        <el-col :span="5">
+                          <el-tag closable @close="removeRightById(scope.row, item1.id)">{{item1.authName}}</el-tag>
+                          <i class="el-icon-caret-right"></i>
+                        </el-col>
+                        <!-- 渲染二级和三级权限 -->
+                        <el-col :span="19">
+                          <!-- 通过 for 循环 嵌套渲染二级权限 -->
+                          <el-row :class="[index2 === 0 ? '' : 'bdtop', 'vcenter']" v-for="(item2, index2) in item1.children" :key="item2.id">
+                            <el-col :span="6">
+                              <el-tag type="success" closable @close="removeRightById(scope.row, item2.id)">{{item2.authName}}</el-tag>
+                              <i class="el-icon-caret-right"></i>
+                            </el-col>
+                            <el-col :span="6">
+                              <el-tag type="warning" v-for="(item3) in item2.children" :key="item3.id" closable @close="removeRightById(scope.row, item3.id)">{{item3.authName}}</el-tag>
+                            </el-col>
+                          </el-row>
+                        </el-col>
+                      </el-row>
+                  </template>
+                </el-table-column>
                 <el-table-column label="序号" type="index"></el-table-column>
                 <el-table-column prop="roleName" label="角色名称"></el-table-column>
                 <el-table-column prop="roleDesc" label="角色描述"></el-table-column>
@@ -177,7 +201,8 @@ export default {
         this.editDialogTableVisible = false
         this.getRoleList()
       })
-    }
+    },
+    removeRightById (roleInfo, id) {}
   }
 }
 </script>
