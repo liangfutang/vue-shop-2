@@ -220,7 +220,6 @@ export default {
       if (removeResult.meta.status !== 200) return this.$message.error(removeResult.meta.msg)
 
       // this.getRoleList()
-      console.log('要删除的角色返回:' + JSON.stringify(removeResult))
       roleInfo.authList = removeResult.data
     }
   }
