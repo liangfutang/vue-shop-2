@@ -10,6 +10,12 @@ import Users from '../components/user/Users.vue'
 import Rights from '../components/power/Rights.vue'
 // 角色组件
 import Roles from '../components/power/Roles.vue'
+// 商品分类
+import Cat from '../components/goods/Cat.vue'
+// 商品列表
+import List from '../components/goods/List.vue'
+// 商品参数
+import Params from '../components/goods/Params.vue'
 
 Vue.use(VueRouter)
 
@@ -37,7 +43,10 @@ const routes = [
       { path: '/welcome', name: '主页欢迎页', component: Welcome },
       { path: '/users', name: '用户列表页', component: Users },
       { path: '/rights', name: '权限管理', component: Rights },
-      { path: '/roles', name: '角色管理', component: Roles }
+      { path: '/roles', name: '角色管理', component: Roles },
+      { path: '/cats', name: '商品分类', component: Cat },
+      { path: '/goods', name: '商品列表', component: List },
+      { path: '/params', name: '商品参数', component: Params }
     ]
   }
 ]
