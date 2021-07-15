@@ -298,9 +298,22 @@ export default {
       this.selectedRoleId = ''
       this.userInfo = {}
     },
-    saveRoleInfo () {},
+    async saveRoleInfo () {
+      // 关闭对话框
+      this.setUserRoleDialogTableVisible = false
+
+      // 判断下拉框选定的角色id
+      if (!this.selectedRoleId) return this.$message.error('请选择要分配的角色')
+
+      // 将要分配的角色提交到后台
+      const { data: saveRoleResult } = await this.$http.post(`/api/private/v1/user/${this.userInfo.id}/role/${this.selectedRoleId}`)
+      if (saveRoleResult.meta.status !== 200) return this.$message.error(saveRoleResult.meta.msg)
+      this.$message.success(saveRoleResult.meta.msg)
+      this.getUserList()
+    },
     async showSetUserRoleDialog (user) {
       // 设置对话框中显示的数据
+      this.userInfo.id = user.id
       this.userInfo.userName = user.userName
       this.userInfo.roleList = ''
       if (user.roleList) {
