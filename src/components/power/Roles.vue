@@ -49,7 +49,7 @@
                         <!-- 删除按钮 -->
                         <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteRoleById(scope.row.id)">删除</el-button>
                         <!-- 分配角色按钮 -->
-                        <el-button type="warning" icon="el-icon-setting" size="mini">分配权限</el-button>
+                        <el-button type="warning" icon="el-icon-setting" size="mini" @click="showSetRightsDialogVisible(scope.row)">分配权限</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -93,6 +93,16 @@
                 <el-button type="primary" @click="eidtRoleInfo">确 定</el-button>
               </div>
             </el-dialog>
+
+            <!-- 分配权限提示框 -->
+            <el-dialog title="分配权限" width="50%" :visible.sync="setRightsDialogVisible" @close="setRightsDialogClose">
+               <el-tree :data="rightList" :props="rightsProps" :default-checked-keys="defCheckKeys" node-key="id" show-checkbox default-expand-all ref="rightTreeRef"></el-tree>
+               <!-- 操作按钮 -->
+               <div slot="footer" class="dialog-footer">
+                <el-button @click="setRightsDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="eidtRoleRight">确 定</el-button>
+              </div>
+            </el-dialog>
         </el-card>
     </div>
 </template>
@@ -123,7 +133,18 @@ export default {
           { required: true, message: '请输入角色描述', trigger: 'blur' },
           { min: 3, max: 16, message: '长度须在 3 到 16 个字符', trigger: 'blur' }
         ]
-      }
+      },
+      setRightsDialogVisible: false,
+      rightsProps: {
+        label: 'authName',
+        children: 'children'
+      },
+      // 分配权限树形控件数据
+      rightList: [],
+      // 分配权限树形控件默认勾选的选项
+      defCheckKeys: [],
+      // 当前被分配角色的id
+      roleId: ''
     }
   },
   created () {
@@ -219,6 +240,43 @@ export default {
 
       // this.getRoleList()
       roleInfo.authList = removeResult.data
+    },
+    setRightsDialogClose () {
+      this.defCheckKeys = []
+    },
+    async showSetRightsDialogVisible (role) {
+      // 留下当前正在分配的角色的id
+      this.roleId = role.id
+      // 到后端查到角色对应的所有权限信息
+      const { data: selectRightResult } = await this.$http.get('/api/private/v1/right/tree')
+      this.rightList = selectRightResult.data
+
+      // 获取到当前角色的权限id
+      this.getLeafKeys(role.authList, this.defCheckKeys)
+      this.setRightsDialogVisible = true
+    },
+    // 递归获取到当前所有权限的id
+    getLeafKeys (node, arr) {
+      if (node === null || node.length === 0) return
+      node.forEach(one => {
+        if (one.children === null || one.children.length === 0) return arr.push(one.id)
+        this.getLeafKeys(one.children, arr)
+      })
+    },
+    async eidtRoleRight () {
+      // 关闭对话框
+      this.setRightsDialogVisible = false
+      // 拿到修改了的角色的id
+      const rightIds = [
+        ...this.$refs.rightTreeRef.getHalfCheckedKeys(),
+        ...this.$refs.rightTreeRef.getCheckedKeys()
+      ]
+      // 向服务端请求修改角色
+      console.log('修改角色的参数:' + JSON.stringify(rightIds))
+      const { data: editRoleRightResult } = await this.$http.post(`/api/private/v1/roles/${this.roleId}/rights`, { rids: rightIds })
+      console.log('修改角色权限结果:' + JSON.stringify(editRoleRightResult))
+      if (editRoleRightResult.meta.status !== 200) return this.$message.error(editRoleRightResult.meta.msg)
+      this.$message.success(editRoleRightResult.meta.msg)
     }
   }
 }
