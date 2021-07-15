@@ -41,7 +41,7 @@
                         <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteUserById(scope.row.id)"></el-button>
                         <!-- 分配角色按钮 -->
                         <el-tooltip class="item" effect="dark" content="角色分配" placement="top-end" :enterable="false">
-                            <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+                            <el-button type="warning" icon="el-icon-setting" size="mini" @click="showSetUserRoleDialog(scope.row)"></el-button>
                         </el-tooltip>
                     </template>
                 </el-table-column>
@@ -96,6 +96,23 @@
               </div>
             </el-dialog>
 
+            <!-- 给用户分配角色提示框 -->
+            <el-dialog title="分配角色" width="50%" :visible.sync="setUserRoleDialogTableVisible" @close="setUserRoleDDialogTableClose">
+              <div>
+                <p>当前的用户：{{userInfo.userName}}</p>
+                <p>当前的角色：{{userInfo.roleList}}</p>
+                <p>分配新角色：
+                  <el-select v-model="selectedRoleId" placeholder="请选择">
+                    <el-option v-for="item in rolesList" :key="item.id" :label="item.roleName" :value="item.id">
+                    </el-option>
+                  </el-select>
+                </p>
+              </div>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="setUserRoleDialogTableVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
+              </span>
+            </el-dialog>
         </el-card>
     </div>
 </template>
@@ -152,7 +169,11 @@ export default {
           { required: true, message: '请输入手机号', trigger: 'blur' },
           { validator: checkMobile, trigger: ['blur', 'change'] }
         ]
-      }
+      },
+      setUserRoleDialogTableVisible: false,
+      userInfo: {},
+      selectedRoleId: '',
+      rolesList: []
     }
   },
   created () {
@@ -272,6 +293,27 @@ export default {
       this.editUserModel = selectResult.data
       // 修改打开窗口的标志状态
       this.editDialogTableVisible = true
+    },
+    setUserRoleDDialogTableClose () {
+      this.selectedRoleId = ''
+      this.userInfo = {}
+    },
+    saveRoleInfo () {},
+    async showSetUserRoleDialog (user) {
+      // 设置对话框中显示的数据
+      this.userInfo.userName = user.userName
+      this.userInfo.roleList = ''
+      if (user.roleList) {
+        user.roleList.forEach(one => {
+          if (one !== undefined) this.userInfo.roleList += (one.roleName + ' ')
+        })
+      }
+      // 查出所有的角色
+      const { data: selectRoleResult } = await this.$http.get('/api/private/v1/roles')
+      if (selectRoleResult.meta.status !== 200) return this.$message.error(selectRoleResult.meta.msg)
+      this.rolesList = selectRoleResult.data.data
+      // 显示对话框
+      this.setUserRoleDialogTableVisible = true
     }
   }
 }

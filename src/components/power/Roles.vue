@@ -272,9 +272,7 @@ export default {
         ...this.$refs.rightTreeRef.getCheckedKeys()
       ]
       // 向服务端请求修改角色
-      console.log('修改角色的参数:' + JSON.stringify(rightIds))
       const { data: editRoleRightResult } = await this.$http.post(`/api/private/v1/roles/${this.roleId}/rights`, { rids: rightIds })
-      console.log('修改角色权限结果:' + JSON.stringify(editRoleRightResult))
       if (editRoleRightResult.meta.status !== 200) return this.$message.error(editRoleRightResult.meta.msg)
       this.$message.success(editRoleRightResult.meta.msg)
     }
