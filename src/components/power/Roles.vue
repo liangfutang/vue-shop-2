@@ -225,5 +225,20 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.el-tag {
+  margin: 7px;
+}
 
+.bdtop {
+  border-top: 1px solid #eee;
+}
+
+.bdbottom {
+  border-bottom: 1px solid #eee;
+}
+
+.vcenter {
+  display: flex;
+  align-items: center;
+}
 </style>
