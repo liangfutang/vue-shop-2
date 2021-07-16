@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1391486",
+      "name": "角色管理",
+      "font_class": "jiaoseguanli",
+      "unicode": "e648",
+      "unicode_decimal": 58952
+    },
+    {
+      "icon_id": "4380278",
+      "name": "商品管理",
+      "font_class": "goods",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
       "icon_id": "1163700",
       "name": "报表",
       "font_class": "baobiao",

@@ -51,9 +51,10 @@ export default {
       iconsObj: {
         110: 'iconfont icon-icon_users',
         130: 'iconfont icon-quanxianguanli',
-        150: 'iconfont icon-shangpinguanli',
-        170: 'iconfont icon-dingdanguanli-',
-        190: 'iconfont icon-baobiao'
+        150: 'iconfont icon-jiaoseguanli',
+        170: 'iconfont icon-shangpinguanli',
+        190: 'iconfont icon-dingdanguanli-',
+        210: 'iconfont icon-baobiao'
       }
     }
   },
