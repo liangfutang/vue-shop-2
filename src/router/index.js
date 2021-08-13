@@ -11,7 +11,7 @@ import Rights from '../components/power/Rights.vue'
 // 角色组件
 import Roles from '../components/power/Roles.vue'
 // 商品分类
-import Cat from '../components/goods/Cat.vue'
+import Cat from '../components/goods/category/Cat.vue'
 // 商品列表
 import List from '../components/goods/List.vue'
 // 商品参数
