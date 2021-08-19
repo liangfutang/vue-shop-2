@@ -9,10 +9,6 @@
     </div>
 </template>
 
-<script>
-export default {}
-</script>
+<script src="./_params.js" lang="js"></script>
 
-<style lang="less" scoped>
-
-</style>
+<style src="./_params.less" lang="less" scoped></style>

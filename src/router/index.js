@@ -15,7 +15,7 @@ import Cat from '../components/goods/category/Cat.vue'
 // 商品列表
 import List from '../components/goods/List.vue'
 // 商品参数
-import Params from '../components/goods/Params.vue'
+import Params from '../components/goods/params/Params.vue'
 
 Vue.use(VueRouter)
 
